@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'maven-publish'
 
-group = 'com.github.paramsen'
+group = 'com.github.timusus'
 
 def VERSION_NAME = "3.0.0"
 def VERSION_CODE = 8
