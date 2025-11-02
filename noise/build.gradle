@@ -60,23 +60,25 @@ task verifyKissfftInitialized {
 }
 
 /* jitpack.io conf */
-task sourcesJar(type: Jar) {
+task androidSourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
     from android.sourceSets.main.java.srcDirs
-    archiveClassifier = 'sources'
+}
+
+task androidJavadocsJar(type: Jar) {
+    archiveClassifier.set('javadoc')
 }
 
 afterEvaluate {
-    task javadoc(type: Javadoc) {
-        failOnError false
-        source = android.sourceSets.main.java.sourceFiles
-        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    }
-    task javadocJar(type: Jar, dependsOn: javadoc) {
-        archiveClassifier = 'javadoc'
-        from javadoc.destinationDir
-    }
-    artifacts {
-        archives sourcesJar
-        archives javadocJar
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+                groupId = 'com.github.timusus'
+                artifactId = 'noise'
+                version = VERSION_NAME
+            }
+        }
     }
 }
