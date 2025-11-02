@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'maven-publish'
 
 group = 'com.github.paramsen'
 
@@ -10,18 +10,20 @@ def VERSION_CODE = 7
 version = VERSION_NAME
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion '29.0.0'
+    namespace 'com.paramsen.noise'
+    compileSdk 36
+    ndkVersion "29.0.14206865"
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 29
+        minSdkVersion 21
+        targetSdkVersion 36
         versionCode VERSION_CODE
         versionName VERSION_NAME
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         externalNativeBuild {
             cmake {
-                arguments "-DANDROID_STL=none"
+                arguments "-DANDROID_STL=none",
+                          "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"
             }
         }
     }
@@ -37,29 +39,40 @@ android {
         }
     }
 
-    dependencies {
-        implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    /* verify that kissfft is initialized */
-    task verifyKissfftInitialized {
-        if(!(new File("noise/src/main/native/kissfft/kiss_fft.c").exists()))
-            throw new Exception('Initialize git submodules before building (read "development" section in readme)')
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
+}
 
-    /* jitpack.io conf */
-    task sourcesJar(type: Jar) {
-        from android.sourceSets.main.java.srcDirs
-        classifier = 'sources'
-    }
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+}
+
+/* verify that kissfft is initialized */
+task verifyKissfftInitialized {
+    if(!(new File("noise/src/main/native/kissfft/kiss_fft.c").exists()))
+        throw new Exception('Initialize git submodules before building (read "development" section in readme)')
+}
+
+/* jitpack.io conf */
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    archiveClassifier = 'sources'
+}
+
+afterEvaluate {
     task javadoc(type: Javadoc) {
         failOnError false
         source = android.sourceSets.main.java.sourceFiles
         classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-        classpath += configurations.compile
     }
     task javadocJar(type: Jar, dependsOn: javadoc) {
-        classifier = 'javadoc'
+        archiveClassifier = 'javadoc'
         from javadoc.destinationDir
     }
     artifacts {

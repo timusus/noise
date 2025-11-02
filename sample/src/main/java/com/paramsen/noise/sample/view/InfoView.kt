@@ -14,7 +14,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.paramsen.noise.sample.BuildConfig
 import com.paramsen.noise.sample.R
-import kotlinx.android.synthetic.main.view_info.view.*
+import com.paramsen.noise.sample.databinding.ViewInfoBinding
 
 /**
  * @author Pär Amsen 07/2017
@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.main.view_info.view.*
 
 class InfoView : ConstraintLayout {
     var showed = false
+    private lateinit var binding: ViewInfoBinding
 
     constructor(context: Context) : this(context, null)
 
@@ -30,15 +31,16 @@ class InfoView : ConstraintLayout {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         layoutParams = LayoutParams(LayoutParams.MATCH_CONSTRAINT, LayoutParams.WRAP_CONTENT)
         LayoutInflater.from(context).inflate(R.layout.view_info, this, true)
+        binding = ViewInfoBinding.bind(this)
 
         setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary))
         if (SDK_INT >= LOLLIPOP) elevation = 4f.px
         padding(16f.px.toInt())
 
-        version.text = "v${BuildConfig.VERSION_NAME}"
-        github.setOnClickListener { browser("https://github.com/paramsen/noise") }
-        me.setOnClickListener { browser("https://paramsen.github.io") }
-        close.setOnClickListener { onClose() }
+        binding.version.text = "v${BuildConfig.VERSION_NAME}"
+        binding.github.setOnClickListener { browser("https://github.com/paramsen/noise") }
+        binding.me.setOnClickListener { browser("https://paramsen.github.io") }
+        binding.close.setOnClickListener { onClose() }
     }
 
     /**

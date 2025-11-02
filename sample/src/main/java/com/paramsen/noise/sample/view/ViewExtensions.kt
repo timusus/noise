@@ -40,17 +40,17 @@ val errTextPaint: () -> Paint = {
 
 fun ViewPropertyAnimator.onEnd(then: () -> Unit): ViewPropertyAnimator {
     this.setListener(object : Animator.AnimatorListener {
-        override fun onAnimationRepeat(animation: Animator?) {
+        override fun onAnimationRepeat(animation: Animator) {
         }
 
-        override fun onAnimationEnd(animation: Animator?) {
+        override fun onAnimationEnd(animation: Animator) {
             then()
         }
 
-        override fun onAnimationCancel(animation: Animator?) {
+        override fun onAnimationCancel(animation: Animator) {
         }
 
-        override fun onAnimationStart(animation: Animator?) {
+        override fun onAnimationStart(animation: Animator) {
         }
     })
 
@@ -59,18 +59,18 @@ fun ViewPropertyAnimator.onEnd(then: () -> Unit): ViewPropertyAnimator {
 
 fun ViewPropertyAnimator.onTerminate(then: () -> Unit): ViewPropertyAnimator {
     this.setListener(object : Animator.AnimatorListener {
-        override fun onAnimationRepeat(animation: Animator?) {
+        override fun onAnimationRepeat(animation: Animator) {
         }
 
-        override fun onAnimationEnd(animation: Animator?) {
+        override fun onAnimationEnd(animation: Animator) {
             then()
         }
 
-        override fun onAnimationCancel(animation: Animator?) {
+        override fun onAnimationCancel(animation: Animator) {
             then()
         }
 
-        override fun onAnimationStart(animation: Animator?) {
+        override fun onAnimationStart(animation: Animator) {
         }
     })
 
@@ -79,14 +79,14 @@ fun ViewPropertyAnimator.onTerminate(then: () -> Unit): ViewPropertyAnimator {
 
 fun Animation.onTerminate(then: () -> Unit): Animation {
     this.setAnimationListener(object : Animation.AnimationListener {
-        override fun onAnimationRepeat(animation: Animation?) {
+        override fun onAnimationRepeat(animation: Animation) {
         }
 
-        override fun onAnimationEnd(animation: Animation?) {
+        override fun onAnimationEnd(animation: Animation) {
             then()
         }
 
-        override fun onAnimationStart(animation: Animation?) {
+        override fun onAnimationStart(animation: Animation) {
         }
     })
 

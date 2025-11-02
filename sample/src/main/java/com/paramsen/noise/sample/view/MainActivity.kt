@@ -16,12 +16,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.ActionMenuItemView
 import com.paramsen.noise.Noise
 import com.paramsen.noise.sample.R
+import com.paramsen.noise.sample.databinding.ActivityMainBinding
 import com.paramsen.noise.sample.source.AudioSource
 import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Function
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     val TAG = javaClass.simpleName!!
@@ -33,9 +33,12 @@ class MainActivity : AppCompatActivity() {
     val p2 = Profiler("p2")
     val p3 = Profiler("p3")
 
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         scheduleAbout()
     }
@@ -62,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         //AudioView
         disposable.add(src.observeOn(Schedulers.newThread())
                 .doOnNext { p0.next() }
-                .subscribe(audioView::onWindow, { e -> Log.e(TAG, e.message) }))
+                .subscribe(binding.audioView::onWindow, { e -> Log.e(TAG, e.message ?: "Unknown error") }))
         //FFTView
         disposable.add(src.observeOn(Schedulers.newThread())
                 .doOnNext { p1.next() }
@@ -74,11 +77,11 @@ class MainActivity : AppCompatActivity() {
                 .map { noise.fft(it, FloatArray(4096 + 2)) }
                 .doOnNext { p3.next() }
                 .subscribe({ fft ->
-                    fftHeatMapView.onFFT(fft)
-                    fftBandView.onFFT(fft)
-                }, { e -> Log.e(TAG, e.message) }))
+                    binding.fftHeatMapView.onFFT(fft)
+                    binding.fftBandView.onFFT(fft)
+                }, { e -> Log.e(TAG, e.message ?: "Unknown error") }))
 
-        tip.schedule()
+        binding.tip.schedule()
     }
 
     /**
@@ -157,15 +160,15 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        info.onShow()
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        binding.info.onShow()
 
         return true
     }
 
     private fun scheduleAbout() {
-        container.postDelayed({
-            if (!info.showed) {
+        binding.container.postDelayed({
+            if (!binding.info.showed) {
                 try {
                     val anim = AnimationUtils.loadAnimation(this, R.anim.nudge).apply {
                         repeatCount = 3
@@ -175,7 +178,7 @@ class MainActivity : AppCompatActivity() {
                         onTerminate { scheduleAbout() }
                     }
 
-                    (((((container.parent.parent as ViewGroup).getChildAt(1) as ViewGroup) //container
+                    (((((binding.container.parent.parent as ViewGroup).getChildAt(1) as ViewGroup) //container
                             .getChildAt(0) as ViewGroup) //actionbar
                             .getChildAt(1) as ActionMenuView)
                             .getChildAt(0) as ActionMenuItemView)

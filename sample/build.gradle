@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 def VERSION_NAME = '1.1'
 def VERSION_CODE = 4
 
 android {
+    namespace 'com.paramsen.noise.sample'
     signingConfigs {
         debug {
             keyAlias 'qqqqqq'
@@ -14,16 +14,15 @@ android {
             storePassword 'qqqqqq'
         }
     }
-    compileSdkVersion 29
-    buildToolsVersion '29.0.0'
+    compileSdk 36
     defaultConfig {
         applicationId "com.paramsen.noise.sample"
-        minSdkVersion 16
-        targetSdkVersion 29
+        minSdkVersion 21
+        targetSdkVersion 36
         versionCode VERSION_CODE
         versionName VERSION_NAME
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         setProperty("archivesBaseName", "NoiseDemo-${versionName}")
 
@@ -38,6 +37,20 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    buildFeatures {
+        viewBinding true
+        buildConfig true
+    }
+
+    lint {
+        abortOnError false
+    }
+
     flavorDimensions 'sample'
     productFlavors {
         devel {
